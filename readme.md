@@ -1,0 +1,1 @@
+# An API project using the Django REST framework, integrating JWT authentication.
