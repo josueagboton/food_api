@@ -3,11 +3,12 @@ from rest_framework.pagination import PageNumberPagination
 
 from django.shortcuts import render
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view,permission_classes
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import AccessToken
 from rest_framework_simplejwt.tokens import RefreshToken
+from authentfication.permissions.permissions import IsAuthenticatedOrReadOnly
 
 
 from food.models import Food, FoodCategory
@@ -17,6 +18,7 @@ from food.serializers import FoodSerializer
     
 
 @api_view(['GET', 'PUT', 'DELETE'])
+@permission_classes([IsAuthenticatedOrReadOnly])
 def food_list(request):
     if request.method == 'GET':
         paginator = PageNumberPagination()
@@ -29,6 +31,7 @@ def food_list(request):
         return paginator.get_paginated_response(serializer.data)
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticatedOrReadOnly])
 def add_food(request):
     if request.method == 'POST':
         serializer = FoodSerializer(data=request.data)
@@ -59,6 +62,7 @@ def refresh_token(request):
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
 @api_view(['GET', 'PUT', 'DELETE'])
+@permission_classes([IsAuthenticatedOrReadOnly])
 def food_detail(request, pk):
     try:
         food = Food.objects.get(pk=pk)
@@ -88,6 +92,7 @@ def food_detail(request, pk):
         return Response({'message': 'Food item deleted successfully!'}, status=204)
     
 @api_view(['GET'])
+@permission_classes([IsAuthenticatedOrReadOnly])
 def get_foods_by_food_category(request, id):
     try:
         foodCategory = FoodCategory.objects.get(pk=id)

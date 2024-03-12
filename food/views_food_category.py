@@ -1,13 +1,13 @@
 from rest_framework.decorators import api_view,permission_classes
 from rest_framework.response import Response
-from authentfication.permissions.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticated
 from food.models import FoodCategory
 from rest_framework.pagination import PageNumberPagination
 
 from food.serializers import FoodCategorySerializer
 
 @api_view(['POST'])
-@permission_classes([IsAuthenticatedOrReadOnly])
+@permission_classes([IsAuthenticated])
 def add_food_category(request):
     if request.method == 'POST':
         print(request.data)
@@ -23,7 +23,7 @@ def add_food_category(request):
 
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticatedOrReadOnly])
+@permission_classes([IsAuthenticated])
 def get_list_categories(request):
     if request.method == 'GET':
         paginator = PageNumberPagination()
@@ -36,7 +36,7 @@ def get_list_categories(request):
         return paginator.get_paginated_response(serializer.data)
     
 @api_view(['PUT'])
-@permission_classes([IsAuthenticatedOrReadOnly])
+@permission_classes([IsAuthenticated])
 def update_food_category(request, id):
     if request.method== 'PUT':
         try:
@@ -55,7 +55,7 @@ def update_food_category(request, id):
         return Response(serializer.errors, status=500)
     
 @api_view(['GET'])
-@permission_classes([IsAuthenticatedOrReadOnly])
+@permission_classes([IsAuthenticated])
 def get_food_category(request, id):
     if request.method == 'GET':
         try:
@@ -66,7 +66,7 @@ def get_food_category(request, id):
             return Response({"error": "CategoryFood not found"}, status=404)
 
 @api_view(['DELETE'])
-@permission_classes([IsAuthenticatedOrReadOnly])
+@permission_classes([IsAuthenticated])
 def delete_food_category(request, id):
     if request.method == 'DELETE':
         try:

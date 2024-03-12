@@ -3,11 +3,12 @@ from rest_framework.pagination import PageNumberPagination
 
 from django.shortcuts import render
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view,permission_classes
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import AccessToken
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.permissions import IsAuthenticated
 
 
 from food.models import Food
@@ -39,7 +40,7 @@ def login(request):
         refresh = RefreshToken.for_user(user)
         return Response({
             'refresh': str(refresh),
-            'access': str(refresh.access_token),
+            'access_token': str(refresh.access_token),
         }, status=status.HTTP_200_OK)
     else:
         return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
@@ -58,8 +59,14 @@ def my_profil(request):
 
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def logout(request):
-     # Supprime le token pour déconnecter l'utilisateur
-    if request.method == 'POST':
-        request.user.auth_token.delete()
-        return Response({'success': 'Successfully logged out'}, status=status.HTTP_200_OK),
+    if request.method== 'POST':
+        try:
+            print(request.data)
+            refresh_token = request.data["refresh_token"]
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+            return Response({"message": "Vous avez été déconnecté avec succès"}, status=200)
+        except Exception as e:
+            return Response({"error": "Une erreur s'est produite lors de la déconnexion"}, status=400)

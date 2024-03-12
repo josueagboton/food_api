@@ -21,6 +21,8 @@ from authentfication import views
 
 from food.views import add_food, food_detail, food_list, get_foods_by_food_category, refresh_token
 from food.views_food_category import delete_food_category, get_food_category, get_list_categories,add_food_category, update_food_category
+from food.views_order import add_order, delete_one_orders, get_all_orders, get_one_order, update_order
+from food.views_order_item import add_order_item, get_one_order_item, get_order_item_from_order, get_order_items
 from food.views_restaurant import add_restaurant, delete_restaurant, get_list_restaurant, get_one_restaurant, update_restaurant
 
 urlpatterns = [
@@ -52,7 +54,20 @@ urlpatterns = [
     path('restaurants/update/<int:id>/', update_restaurant, name="update_restaurant"),
     path('restaurants/delete/<int:id>/', delete_restaurant, name="delete_restaurant"),
 
+    #manage order
+    path('orders/', get_all_orders, name="get_all_orders"),
+    path('orders/add/', add_order, name="add_order"),
+    path('orders/<int:id>/', get_one_order, name="get_one_order"),
+    path('orders/update/<int:id>/', update_order, name="update_order"),
+    path('orders/delete/<int:id>/', delete_one_orders, name="delete_one_orders"),
 
+
+    #manage item order
+    path('orders-item/', get_order_items, name="get_order_items"),
+    path('orders-item/add/', add_order_item, name="add_order_item"),
+    path('orders-item/<int:id>/', get_one_order_item, name="get_one_order_item"),
+    path('orders-item/order/<int:orderId>/', get_order_item_from_order, name="get_order_item_from_order"),
+    #path('orders-item/delete/<int:id>/', delete_one_orders, name="delete_one_orders"),
 
 
 
